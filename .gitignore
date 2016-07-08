@@ -16,3 +16,4 @@ hs_err_pid*
 *.iws
 generated-src
 out
+build

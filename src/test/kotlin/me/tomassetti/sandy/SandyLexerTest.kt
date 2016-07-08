@@ -11,8 +11,6 @@ class SandyLexerTest {
 
     fun lexerForCode(code: String) = SandyLexer(ANTLRInputStream(StringReader(code)))
 
-    fun lexerForResource(resourceName: String) = SandyLexer(ANTLRInputStream(this.javaClass.getResourceAsStream("/${resourceName}.sandy")))
-
     fun tokens(lexer: SandyLexer): List<String> {
         val tokens = LinkedList<String>()
         do {
