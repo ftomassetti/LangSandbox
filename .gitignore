@@ -14,3 +14,5 @@ hs_err_pid*
 *.iml
 *.ipr
 *.iws
+generated-src
+out
