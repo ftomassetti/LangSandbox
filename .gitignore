@@ -24,3 +24,4 @@ hs_err_pid*
 # Build output
 generated-src
 out
+build

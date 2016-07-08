@@ -2,7 +2,7 @@ lexer grammar SandyLexer;
 
 // Whitespace
 NEWLINE            : '\r\n' | 'r' | '\n' ;
-WS                 : [\t ]+ ;
+WS                 : [\t ]+ -> skip ;
 
 // Keywords
 VAR                : 'var' ;
