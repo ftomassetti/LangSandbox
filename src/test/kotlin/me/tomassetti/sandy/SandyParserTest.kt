@@ -29,16 +29,71 @@ class SandyParserTest {
 
     fun parse(lexer: SandyLexer) : SandyParser.SandyFileContext = SandyParser(CommonTokenStream(lexer)).sandyFile()
 
+    fun parseResource(resourceName: String) : SandyParser.SandyFileContext = SandyParser(CommonTokenStream(lexerForResource(resourceName))).sandyFile()
+
     @test fun parseAdditionAssignment() {
-        println(parse(lexerForResource("addition_assignment")))
+        assertEquals(
+"""SandyFile
+  Line
+    AssignmentStatement
+      Assignment
+        T[a]
+        T[=]
+        BinaryOperation
+          IntLiteral
+            T[1]
+          T[+]
+          IntLiteral
+            T[2]
+    T[<EOF>]
+""",
+                toParseTree(parseResource("addition_assignment")).multiLineString())
     }
 
     @test fun parseSimplestVarDecl() {
-        println(parse(lexerForResource("simplest_var_decl")))
+        assertEquals(
+"""SandyFile
+  Line
+    VarDeclarationStatement
+      VarDeclaration
+        T[var]
+        Assignment
+          T[a]
+          T[=]
+          IntLiteral
+            T[1]
+    T[<EOF>]
+""",
+                toParseTree(parseResource("simplest_var_decl")).multiLineString())
     }
 
     @test fun parsePrecedenceExpressions() {
-        println(parse(lexerForResource("precedence_expression")))
+        assertEquals(
+"""SandyFile
+  Line
+    VarDeclarationStatement
+      VarDeclaration
+        T[var]
+        Assignment
+          T[a]
+          T[=]
+          BinaryOperation
+            BinaryOperation
+              IntLiteral
+                T[1]
+              T[+]
+              BinaryOperation
+                IntLiteral
+                  T[2]
+                T[*]
+                IntLiteral
+                  T[3]
+            T[-]
+            IntLiteral
+              T[4]
+    T[<EOF>]
+""",
+                toParseTree(parseResource("precedence_expression")).multiLineString())
     }
 
 
