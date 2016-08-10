@@ -31,6 +31,7 @@ dependencies {
   compile "org.antlr:antlr4-runtime:4.5.1"
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+  compile 'org.ow2.asm:asm-all:5.1'
   testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
   testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
   testCompile 'junit:junit:4.12'
