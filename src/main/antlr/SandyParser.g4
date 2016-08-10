@@ -7,7 +7,10 @@ sandyFile : lines=line+ ;
 line      : statement (NEWLINE | EOF) ;
 
 statement : varDeclaration # varDeclarationStatement
-          | assignment     # assignmentStatement ;
+          | assignment     # assignmentStatement
+          | print          # printStatement ;
+
+print : PRINT LPAREN expression RPAREN ;
 
 varDeclaration : VAR assignment ;
 
