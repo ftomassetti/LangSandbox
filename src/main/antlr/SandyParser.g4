@@ -18,8 +18,12 @@ assignment : ID ASSIGN expression ;
 
 expression : left=expression operator=(DIVISION|ASTERISK) right=expression # binaryOperation
            | left=expression operator=(PLUS|MINUS) right=expression        # binaryOperation
-           | LPAREN expression RPAREN # parenExpression
-           | ID                #varReference
-           | MINUS expression  #minusExpression
-           | INTLIT # intLiteral
-           | DECLIT # decimalLiteral ;
+           | LPAREN expression RPAREN                                      # parenExpression
+           | ID                                                            # varReference
+           | MINUS expression                                              # minusExpression
+           | INTLIT                                                        # intLiteral
+           | DECLIT                                                        # decimalLiteral
+           | value=expression AS targetType=type                           # typeConversion ;
+
+type : INT     # integer
+     | DECIMAL # decimal ;
