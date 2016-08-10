@@ -6,6 +6,7 @@ WS                 : [\t ]+ -> skip ;
 
 // Keywords
 VAR                : 'var' ;
+PRINT              : 'print';
 
 // Literals
 INTLIT             : '0'|[1-9][0-9]* ;
