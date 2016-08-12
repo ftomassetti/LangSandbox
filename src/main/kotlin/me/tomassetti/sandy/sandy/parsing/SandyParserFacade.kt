@@ -1,7 +1,7 @@
-package me.tomassetti.sandy.parsing
+package me.tomassetti.sandy.sandy.parsing
 
-import me.tomassetti.langsandbox.SandyLexer
-import me.tomassetti.langsandbox.SandyParser
+import me.tomassetti.sandy.langsandbox.SandyLexer
+import me.tomassetti.sandy.langsandbox.SandyParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
 import org.antlr.v4.runtime.dfa.DFA

@@ -1,13 +1,13 @@
-package me.tomassetti.sandy
+package me.tomassetti.sandy.sandy
 
-import me.tomassetti.langsandbox.SandyLexer
-import me.tomassetti.langsandbox.SandyParser
+import me.tomassetti.sandy.langsandbox.SandyLexer
+import me.tomassetti.sandy.langsandbox.SandyParser
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
-import java.io.*
+import java.io.StringReader
 import java.util.*
+import kotlin.test.assertEquals
 import org.junit.Test as test
-import kotlin.test.*
 
 class SandyParserTest {
 
@@ -31,7 +31,7 @@ class SandyParserTest {
 
     fun parseResource(resourceName: String) : SandyParser.SandyFileContext = SandyParser(CommonTokenStream(lexerForResource(resourceName))).sandyFile()
 
-    @test fun parseAdditionAssignment() {
+    @org.junit.Test fun parseAdditionAssignment() {
         assertEquals(
 """SandyFile
   Line
@@ -50,7 +50,7 @@ class SandyParserTest {
                 toParseTree(parseResource("addition_assignment")).multiLineString())
     }
 
-    @test fun parseSimplestVarDecl() {
+    @org.junit.Test fun parseSimplestVarDecl() {
         assertEquals(
 """SandyFile
   Line
@@ -67,7 +67,7 @@ class SandyParserTest {
                 toParseTree(parseResource("simplest_var_decl")).multiLineString())
     }
 
-    @test fun parsePrecedenceExpressions() {
+    @org.junit.Test fun parsePrecedenceExpressions() {
         assertEquals(
 """SandyFile
   Line

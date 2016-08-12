@@ -1,11 +1,11 @@
-package me.tomassetti.sandy
+package me.tomassetti.sandy.sandy
 
-import me.tomassetti.langsandbox.SandyLexer
+import me.tomassetti.sandy.langsandbox.SandyLexer
 import org.antlr.v4.runtime.ANTLRInputStream
-import java.io.*
+import java.io.StringReader
 import java.util.*
+import kotlin.test.assertEquals
 import org.junit.Test as test
-import kotlin.test.*
 
 class SandyLexerTest {
 
@@ -23,27 +23,27 @@ class SandyLexerTest {
         return tokens
     }
 
-    @test fun parseVarDeclarationAssignedAnIntegerLiteral() {
+    @org.junit.Test fun parseVarDeclarationAssignedAnIntegerLiteral() {
         assertEquals(listOf("VAR", "ID", "ASSIGN", "INTLIT", "EOF"),
                 tokens(lexerForCode("var a = 1")))
     }
 
-    @test fun parseVarDeclarationAssignedADecimalLiteral() {
+    @org.junit.Test fun parseVarDeclarationAssignedADecimalLiteral() {
         assertEquals(listOf("VAR", "ID", "ASSIGN", "DECLIT", "EOF"),
                 tokens(lexerForCode("var a = 1.23")))
     }
 
-    @test fun parseVarDeclarationAssignedASum() {
+    @org.junit.Test fun parseVarDeclarationAssignedASum() {
         assertEquals(listOf("VAR", "ID", "ASSIGN", "INTLIT", "PLUS", "INTLIT", "EOF"),
                 tokens(lexerForCode("var a = 1 + 2")))
     }
 
-    @test fun parseMathematicalExpression() {
+    @org.junit.Test fun parseMathematicalExpression() {
         assertEquals(listOf("INTLIT", "PLUS", "ID", "ASTERISK", "INTLIT", "DIVISION", "INTLIT", "MINUS", "INTLIT", "EOF"),
                 tokens(lexerForCode("1 + a * 3 / 4 - 5")))
     }
 
-    @test fun parseMathematicalExpressionWithParenthesis() {
+    @org.junit.Test fun parseMathematicalExpressionWithParenthesis() {
         assertEquals(listOf("INTLIT", "PLUS", "LPAREN", "ID", "ASTERISK", "INTLIT", "RPAREN", "MINUS", "DECLIT", "EOF"),
                 tokens(lexerForCode("1 + (a * 3) - 5.12")))
     }
