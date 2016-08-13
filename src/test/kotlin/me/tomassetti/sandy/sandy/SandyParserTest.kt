@@ -1,7 +1,7 @@
 package me.tomassetti.sandy.sandy
 
-import me.tomassetti.sandy.langsandbox.SandyLexer
-import me.tomassetti.sandy.langsandbox.SandyParser
+import me.tomassetti.langsandbox.SandyLexer
+import me.tomassetti.langsandbox.SandyParser
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import java.io.StringReader

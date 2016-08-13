@@ -1,6 +1,6 @@
 package me.tomassetti.sandy.sandy.ast
 
-import me.tomassetti.sandy.langsandbox.SandyParser.*
+import me.tomassetti.langsandbox.SandyParser.*
 import org.antlr.v4.runtime.ParserRuleContext
 
 interface ParseTreeToAstMapper<in PTN : ParserRuleContext, out ASTN : Node> {
@@ -14,8 +14,13 @@ fun LineContext.toAst() : Statement = this.statement().toAst()
 fun StatementContext.toAst() : Statement = when (this) {
     is VarDeclarationStatementContext -> toAst()
     is AssignmentStatementContext -> toAst()
+    is PrintStatementContext -> toAst()
     else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
 }
+
+fun PrintStatementContext.toAst() = print().toAst()
+
+fun PrintContext.toAst() = Print(expression().toAst())
 
 fun VarDeclarationStatementContext.toAst() = varDeclaration().toAst()
 
@@ -30,6 +35,16 @@ fun  ExpressionContext.toAst() : Expression = when (this) {
     is IntLiteralContext -> toAst()
     is DecimalLiteralContext -> toAst()
     is ParenExpressionContext -> expression().toAst()
+    is VarReferenceContext -> toAst()
+    is TypeConversionContext -> toAst()
+    else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
+}
+
+fun TypeConversionContext.toAst() = TypeConversion(expression().toAst(), targetType.toAst())
+
+fun TypeContext.toAst() : Type = when (this) {
+    is IntegerContext -> IntType
+    is DecimalContext -> DecimalType
     else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
 }
 
@@ -44,6 +59,8 @@ fun  BinaryOperationContext.toAst() : Expression = when (operator.text) {
 fun  IntLiteralContext.toAst() = IntLit(text)
 
 fun  DecimalLiteralContext.toAst() = DecLit(text)
+
+fun  VarReferenceContext.toAst() = VarReference(text)
 
 class SandyParseTreeToAstMapper : ParseTreeToAstMapper<SandyFileContext, SandyFile> {
     override fun map(parseTreeNode: SandyFileContext): SandyFile = parseTreeNode.toAst()
