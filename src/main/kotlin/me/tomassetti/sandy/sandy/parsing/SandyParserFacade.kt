@@ -1,7 +1,7 @@
 package me.tomassetti.sandy.sandy.parsing
 
-import me.tomassetti.sandy.langsandbox.SandyLexer
-import me.tomassetti.sandy.langsandbox.SandyParser
+import me.tomassetti.langsandbox.SandyLexer
+import me.tomassetti.langsandbox.SandyParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
 import org.antlr.v4.runtime.dfa.DFA
@@ -37,7 +37,7 @@ object SandyParserFacade {
                 // Ignored for now
             }
 
-            override fun syntaxError(recognizer: Recognizer<*, *>?, offendingSymbol: Any, line: Int, charPositionInline: Int, msg: String, ex: RecognitionException?) {
+            override fun syntaxError(recognizer: Recognizer<*, *>?, offendingSymbol: Any?, line: Int, charPositionInline: Int, msg: String?, ex: RecognitionException?) {
                 errors.add(Error("Error at L$line:$charPositionInline: $msg"))
             }
 

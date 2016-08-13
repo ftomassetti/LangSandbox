@@ -70,9 +70,13 @@ interface Type : Node { }
 // Types
 //
 
-object IntType : Type
+object IntType : Type {
+    override fun toString() = "IntType"
+}
 
-object DecimalType : Type
+object DecimalType : Type {
+    override fun toString() = "DecimalType"
+}
 
 //
 // Expressions
