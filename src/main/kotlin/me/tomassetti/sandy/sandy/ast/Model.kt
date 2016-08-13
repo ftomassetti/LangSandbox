@@ -22,6 +22,10 @@ fun Node.process(operation: (Node) -> Unit) {
     }
 }
 
+fun <T:Node> Node.specificProcess(klass: Class<T>, operation: (T) -> Unit) {
+    process { if (klass.isInstance(it)) { operation(it as T) } }
+}
+
 fun Node.transform(operation: (Node) -> Node) : Node {
     operation(this)
     val changes = HashMap<String, Any>()

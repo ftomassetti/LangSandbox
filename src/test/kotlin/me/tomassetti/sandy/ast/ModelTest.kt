@@ -1,12 +1,14 @@
 package me.tomassetti.sandy.ast
 
 import me.tomassetti.sandy.sandy.ast.*
+import me.tomassetti.sandy.sandy.parsing.SandyParserFacade
+import java.util.*
 import kotlin.test.assertEquals
 import org.junit.Test as test
 
 class ModelTest {
 
-    @org.junit.Test fun transformVarName() {
+    @test fun transformVarName() {
         val startTree = SandyFile(listOf(
                 VarDeclaration("A", IntLit("10")),
                 Assignment("A", IntLit("11")),
@@ -23,6 +25,19 @@ class ModelTest {
                 else -> it
             }
         })
+    }
+
+    fun toAst(code: String) : SandyFile = SandyParserFacade.parse(code).root!!.toAst()
+
+    @test fun processAllVarDeclarations() {
+        val ast = toAst("""var a = 1
+                          |a = 2 * 5
+                          |var b = a
+                          |print(b)
+                          |var c = b * b""".trimMargin("|"))
+        val varDeclarations = LinkedList<String>()
+        ast.specificProcess(VarDeclaration::class.java, { varDeclarations.add(it.varName) })
+        assertEquals(listOf("a", "b", "c"), varDeclarations)
     }
 
 }
