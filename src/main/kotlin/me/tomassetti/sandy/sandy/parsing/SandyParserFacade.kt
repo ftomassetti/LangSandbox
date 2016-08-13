@@ -5,8 +5,11 @@ import me.tomassetti.sandy.langsandbox.SandyParser
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
 import org.antlr.v4.runtime.dfa.DFA
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.InputStream
+import java.nio.charset.Charset
 import java.util.*
 
 data class Error(val message: String)
@@ -15,9 +18,15 @@ data class ParsingResult(val root : SandyParser.SandyFileContext?, val errors: L
     fun isCorrect() = errors.isEmpty() && root != null
 }
 
+fun String.toStream(charset: Charset = Charsets.UTF_8) = ByteArrayInputStream(toByteArray(charset))
+
 object SandyParserFacade {
 
-    fun parse(file: File) : ParsingResult {
+    fun parse(code: String) : ParsingResult = parse(code.toStream())
+
+    fun parse(file: File) : ParsingResult = parse(FileInputStream(file))
+
+    fun parse(inputStream: InputStream) : ParsingResult {
         val errors = LinkedList<Error>()
         val errorListener = object : ANTLRErrorListener {
             override fun reportAmbiguity(p0: Parser?, p1: DFA?, p2: Int, p3: Int, p4: Boolean, p5: BitSet?, p6: ATNConfigSet?) {
@@ -37,7 +46,7 @@ object SandyParserFacade {
             }
         }
 
-        val lexer = SandyLexer(ANTLRInputStream(FileInputStream(file)))
+        val lexer = SandyLexer(ANTLRInputStream(inputStream))
         lexer.removeErrorListeners()
         lexer.addErrorListener(errorListener)
         val parser = SandyParser(CommonTokenStream(lexer))

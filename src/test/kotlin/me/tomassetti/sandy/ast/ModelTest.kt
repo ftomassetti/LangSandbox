@@ -1,12 +1,12 @@
-package me.tomassetti.sandy.model
+package me.tomassetti.sandy.ast
 
-import me.tomassetti.sandy.sandy.model.*
+import me.tomassetti.sandy.sandy.ast.*
 import kotlin.test.assertEquals
 import org.junit.Test as test
 
 class ModelTest {
 
-    @test fun transformVarName() {
+    @org.junit.Test fun transformVarName() {
         val startTree = SandyFile(listOf(
                 VarDeclaration("A", IntLit("10")),
                 Assignment("A", IntLit("11")),

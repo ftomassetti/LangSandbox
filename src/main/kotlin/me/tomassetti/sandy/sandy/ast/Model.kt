@@ -1,4 +1,4 @@
-package me.tomassetti.sandy.sandy.model
+package me.tomassetti.sandy.sandy.ast
 
 import java.util.*
 import kotlin.reflect.KParameter
