@@ -1,4 +1,4 @@
-package me.tomassetti.sandy.sandy
+package me.tomassetti.sandy
 
 import me.tomassetti.langsandbox.SandyLexer
 import org.antlr.v4.runtime.ANTLRInputStream
@@ -43,12 +43,12 @@ class SandyLexerTest {
                 tokens(lexerForCode("1 + a * 3 / 4 - 5")))
     }
 
-    @test fun parseMathematicalExpressionWithParenthesis() {
+    @org.junit.Test fun parseMathematicalExpressionWithParenthesis() {
         assertEquals(listOf("INTLIT", "PLUS", "LPAREN", "ID", "ASTERISK", "INTLIT", "RPAREN", "MINUS", "DECLIT", "EOF"),
                 tokens(lexerForCode("1 + (a * 3) - 5.12")))
     }
 
-    @test fun parseCast() {
+    @org.junit.Test fun parseCast() {
         assertEquals(listOf("ID", "ASSIGN", "ID", "AS", "INT", "EOF"),
                 tokens(lexerForCode("a = b as Int")))
     }

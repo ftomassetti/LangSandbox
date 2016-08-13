@@ -1,4 +1,4 @@
-package me.tomassetti.sandy.sandy
+package me.tomassetti.sandy
 
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode

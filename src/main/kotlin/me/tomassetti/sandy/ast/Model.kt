@@ -1,4 +1,4 @@
-package me.tomassetti.sandy.sandy.ast
+package me.tomassetti.sandy.ast
 
 import java.util.*
 import kotlin.reflect.KParameter
@@ -30,7 +30,7 @@ fun Node.process(operation: (Node) -> Unit) {
     }
 }
 
-fun <T:Node> Node.specificProcess(klass: Class<T>, operation: (T) -> Unit) {
+fun <T: Node> Node.specificProcess(klass: Class<T>, operation: (T) -> Unit) {
     process { if (klass.isInstance(it)) { operation(it as T) } }
 }
 
