@@ -1,7 +1,6 @@
 package me.tomassetti.sandy.ast
 
-import me.tomassetti.sandy.sandy.ast.*
-import me.tomassetti.sandy.sandy.parsing.SandyParserFacade
+import me.tomassetti.sandy.parsing.SandyAntlrParserFacade
 import java.util.*
 import kotlin.test.assertEquals
 import org.junit.Test as test
@@ -27,7 +26,7 @@ class ModelTest {
         })
     }
 
-    fun toAst(code: String) : SandyFile = SandyParserFacade.parse(code).root!!.toAst()
+    fun toAst(code: String) : SandyFile = SandyAntlrParserFacade.parse(code).root!!.toAst()
 
     @test fun processAllVarDeclarations() {
         val ast = toAst("""var a = 1

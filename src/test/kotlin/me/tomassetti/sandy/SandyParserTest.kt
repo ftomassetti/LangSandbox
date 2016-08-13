@@ -1,4 +1,4 @@
-package me.tomassetti.sandy.sandy
+package me.tomassetti.sandy
 
 import me.tomassetti.langsandbox.SandyLexer
 import me.tomassetti.langsandbox.SandyParser

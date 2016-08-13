@@ -1,4 +1,4 @@
-package me.tomassetti.sandy.sandy.ast
+package me.tomassetti.sandy.ast
 
 import me.tomassetti.langsandbox.SandyParser.*
 import org.antlr.v4.runtime.ParserRuleContext
@@ -25,7 +25,7 @@ fun StatementContext.toAst(considerPosition: Boolean = false) : Statement = when
     else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
 }
 
-fun  ExpressionContext.toAst(considerPosition: Boolean = false) : Expression = when (this) {
+fun ExpressionContext.toAst(considerPosition: Boolean = false) : Expression = when (this) {
     is BinaryOperationContext -> toAst(considerPosition)
     is IntLiteralContext -> IntLit(text, toPosition(considerPosition))
     is DecimalLiteralContext -> DecLit(text, toPosition(considerPosition))
@@ -41,7 +41,7 @@ fun TypeContext.toAst(considerPosition: Boolean = false) : Type = when (this) {
     else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
 }
 
-fun  BinaryOperationContext.toAst(considerPosition: Boolean = false) : Expression = when (operator.text) {
+fun BinaryOperationContext.toAst(considerPosition: Boolean = false) : Expression = when (operator.text) {
     "+" -> SumExpression(left.toAst(considerPosition), right.toAst(considerPosition), toPosition(considerPosition))
     "-" -> SubtractionExpression(left.toAst(considerPosition), right.toAst(considerPosition), toPosition(considerPosition))
     "*" -> MultiplicationExpression(left.toAst(considerPosition), right.toAst(considerPosition), toPosition(considerPosition))
