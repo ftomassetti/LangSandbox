@@ -13,7 +13,13 @@ interface Node {
     val position: Position?
 }
 
-data class Point(val line: Int, val column: Int)
+fun Node.isBefore(other: Node) : Boolean = position!!.start.isBefore(other.position!!.start)
+
+fun Point.isBefore(other: Point) : Boolean = line < other.line || (line == other.line && column < other.column)
+
+data class Point(val line: Int, val column: Int) {
+    override fun toString() = "Line $line, Column $column"
+}
 
 data class Position(val start: Point, val end: Point)
 
