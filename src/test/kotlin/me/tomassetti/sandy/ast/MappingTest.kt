@@ -1,6 +1,6 @@
 package me.tomassetti.sandy.ast
 
-import me.tomassetti.sandy.parsing.SandyAntlrParserFacade
+import me.tomassetti.sandy.parsing.SandyParserFacade
 import kotlin.test.assertEquals
 import org.junit.Test as test
 
@@ -9,7 +9,7 @@ class MappingTest {
     @test fun mapSimpleFileWithoutPositions() {
         val code = """var a = 1 + 2
                      |a = 7 * (2 / 3)""".trimMargin("|")
-        val ast = SandyAntlrParserFacade.parse(code).root!!.toAst()
+        val ast = SandyParserFacade.parse(code).root!!.toAst()
         val expectedAst = SandyFile(listOf(
                 VarDeclaration("a", SumExpression(IntLit("1"), IntLit("2"))),
                 Assignment("a", MultiplicationExpression(
@@ -23,7 +23,7 @@ class MappingTest {
     @test fun mapSimpleFileWithPositions() {
         val code = """var a = 1 + 2
                      |a = 7 * (2 / 3)""".trimMargin("|")
-        val ast = SandyAntlrParserFacade.parse(code).root!!.toAst(considerPosition = true)
+        val ast = SandyParserFacade.parse(code).root!!.toAst(considerPosition = true)
         val expectedAst = SandyFile(listOf(
                 VarDeclaration("a",
                         SumExpression(
@@ -46,21 +46,21 @@ class MappingTest {
 
     @test fun mapCastInt() {
         val code = "a = 7 as Int"
-        val ast = SandyAntlrParserFacade.parse(code).root!!.toAst()
+        val ast = SandyParserFacade.parse(code).root!!.toAst()
         val expectedAst = SandyFile(listOf(Assignment("a", TypeConversion(IntLit("7"), IntType()))))
         assertEquals(expectedAst, ast)
     }
 
     @test fun mapCastDecimal() {
         val code = "a = 7 as Decimal"
-        val ast = SandyAntlrParserFacade.parse(code).root!!.toAst()
+        val ast = SandyParserFacade.parse(code).root!!.toAst()
         val expectedAst = SandyFile(listOf(Assignment("a", TypeConversion(IntLit("7"), DecimalType()))))
         assertEquals(expectedAst, ast)
     }
 
     @test fun mapPrint() {
         val code = "print(a)"
-        val ast = SandyAntlrParserFacade.parse(code).root!!.toAst()
+        val ast = SandyParserFacade.parse(code).root!!.toAst()
         val expectedAst = SandyFile(listOf(Print(VarReference("a"))))
         assertEquals(expectedAst, ast)
     }
