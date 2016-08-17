@@ -31,7 +31,7 @@ object SandyAntlrParserFacade {
     fun parse(file: File) : AntlrParsingResult = parse(FileInputStream(file))
 
     fun parse(inputStream: InputStream) : AntlrParsingResult {
-        val lexicalAnsSyntaticErrors = LinkedList<Error>()
+        val lexicalAndSyntaticErrors = LinkedList<Error>()
         val errorListener = object : ANTLRErrorListener {
             override fun reportAmbiguity(p0: Parser?, p1: DFA?, p2: Int, p3: Int, p4: Boolean, p5: BitSet?, p6: ATNConfigSet?) {
                 // Ignored for now
@@ -42,7 +42,7 @@ object SandyAntlrParserFacade {
             }
 
             override fun syntaxError(recognizer: Recognizer<*, *>?, offendingSymbol: Any?, line: Int, charPositionInline: Int, msg: String, ex: RecognitionException?) {
-                lexicalAnsSyntaticErrors.add(Error(msg, Point(line, charPositionInline)))
+                lexicalAndSyntaticErrors.add(Error(msg, Point(line, charPositionInline)))
             }
 
             override fun reportContextSensitivity(p0: Parser?, p1: DFA?, p2: Int, p3: Int, p4: Int, p5: ATNConfigSet?) {
@@ -57,7 +57,7 @@ object SandyAntlrParserFacade {
         parser.removeErrorListeners()
         parser.addErrorListener(errorListener)
         val antlrRoot = parser.sandyFile()
-        return AntlrParsingResult(antlrRoot, lexicalAnsSyntaticErrors)
+        return AntlrParsingResult(antlrRoot, lexicalAndSyntaticErrors)
     }
 
 }
