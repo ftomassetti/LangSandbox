@@ -49,6 +49,7 @@ sourceSets {
     }
 }
 compileJava.source sourceSets.generated.java, sourceSets.main.java
+compileKotlin.source sourceSets.generated.java, sourceSets.main.java, sourceSets.main.kotlin
 
 clean{
     delete "generated-src"
