@@ -6,6 +6,8 @@ import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.*
+import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.*
@@ -29,12 +31,12 @@ object DecimalType : SandyType {
         get() = "D"
 }
 
-fun Expression.type() : SandyType {
+fun Expression.type(vars: Map<String, Var>) : SandyType {
     return when (this) {
         is IntLit -> IntType
         is BinaryExpression -> {
-            val leftType = left.type()
-            val rightType = right.type()
+            val leftType = left.type(vars)
+            val rightType = right.type(vars)
             if (leftType != IntType && leftType != DecimalType) {
                 throw UnsupportedOperationException()
             }
@@ -47,14 +49,15 @@ fun Expression.type() : SandyType {
                 return DecimalType
             }
         }
+        is VarReference -> vars[this.varName]!!.type
         else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
     }
 }
 
 // Convert, if needed
-fun Expression.pushAs(methodWriter: MethodVisitor, varNamesToIndexes: Map<String, Int>, desiredType: SandyType) {
-    push(methodWriter, varNamesToIndexes)
-    val myType = type()
+fun Expression.pushAs(methodWriter: MethodVisitor, vars: Map<String, Var>, desiredType: SandyType) {
+    push(methodWriter, vars)
+    val myType = type(vars)
     if (myType != desiredType) {
         if (myType == IntType && desiredType == DecimalType) {
             methodWriter.visitInsn(I2D)
@@ -66,50 +69,60 @@ fun Expression.pushAs(methodWriter: MethodVisitor, varNamesToIndexes: Map<String
     }
 }
 
-fun Expression.push(methodWriter: MethodVisitor, varNamesToIndexes: Map<String, Int>) {
+fun Expression.push(methodWriter: MethodVisitor, vars: Map<String, Var>) {
     when (this) {
         is IntLit -> methodWriter.visitLdcInsn(Integer.parseInt(this.value))
         is SumExpression -> {
-            left.pushAs(methodWriter, varNamesToIndexes, this.type())
-            right.pushAs(methodWriter, varNamesToIndexes, this.type())
-            when (this.type()) {
+            left.pushAs(methodWriter, vars, this.type(vars))
+            right.pushAs(methodWriter, vars, this.type(vars))
+            when (this.type(vars)) {
                 IntType -> methodWriter.visitInsn(IADD)
                 DecimalType -> methodWriter.visitInsn(DADD)
-                else -> throw UnsupportedOperationException("Summing ${this.type()}")
+                else -> throw UnsupportedOperationException("Summing ${this.type(vars)}")
             }
         }
         is SubtractionExpression -> {
-            left.pushAs(methodWriter, varNamesToIndexes, this.type())
-            right.pushAs(methodWriter, varNamesToIndexes, this.type())
-            when (this.type()) {
+            left.pushAs(methodWriter, vars, this.type(vars))
+            right.pushAs(methodWriter, vars, this.type(vars))
+            when (this.type(vars)) {
                 IntType -> methodWriter.visitInsn(ISUB)
                 DecimalType -> methodWriter.visitInsn(DSUB)
-                else -> throw UnsupportedOperationException("Summing ${this.type()}")
+                else -> throw UnsupportedOperationException("Summing ${this.type(vars)}")
             }
         }
         is DivisionExpression -> {
-            left.pushAs(methodWriter, varNamesToIndexes, this.type())
-            right.pushAs(methodWriter, varNamesToIndexes, this.type())
-            when (this.type()) {
+            left.pushAs(methodWriter, vars, this.type(vars))
+            right.pushAs(methodWriter, vars, this.type(vars))
+            when (this.type(vars)) {
                 IntType -> methodWriter.visitInsn(IDIV)
                 DecimalType -> methodWriter.visitInsn(DDIV)
-                else -> throw UnsupportedOperationException("Summing ${this.type()}")
+                else -> throw UnsupportedOperationException("Summing ${this.type(vars)}")
             }
         }
         is MultiplicationExpression -> {
-            left.pushAs(methodWriter, varNamesToIndexes, this.type())
-            right.pushAs(methodWriter, varNamesToIndexes, this.type())
-            when (this.type()) {
+            left.pushAs(methodWriter, vars, this.type(vars))
+            right.pushAs(methodWriter, vars, this.type(vars))
+            when (this.type(vars)) {
                 IntType -> methodWriter.visitInsn(IMUL)
                 DecimalType -> methodWriter.visitInsn(DMUL)
-                else -> throw UnsupportedOperationException("Summing ${this.type()}")
+                else -> throw UnsupportedOperationException("Summing ${this.type(vars)}")
+            }
+        }
+        is VarReference -> {
+            val type = vars[this.varName]!!.type
+            when (type) {
+                IntType -> methodWriter.visitVarInsn(ILOAD, vars[this.varName]!!.index)
+                DecimalType -> methodWriter.visitVarInsn(DLOAD, vars[this.varName]!!.index)
+                else -> throw UnsupportedOperationException(type.javaClass.canonicalName)
             }
         }
         else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
     }
 }
 
-fun VarDeclaration.type() = this.value.type()
+fun VarDeclaration.type(vars: Map<String, Var>) = this.value.type(vars)
+
+data class Var(val type:SandyType, val index:Int)
 
 class JvmCompiler {
 
@@ -124,19 +137,37 @@ class JvmCompiler {
 
         // Variable declarations
         var nextVarIndex = 0
-        val varNamesToIndexes = HashMap<String, Int>()
+        val vars = HashMap<String, Var>()
         root.specificProcess(VarDeclaration::class.java) {
             val index = nextVarIndex++
-            varNamesToIndexes[it.varName] = index
-            mainMethodWriter.visitLocalVariable(it.varName, it.type().jvmDescription, null, methodStart, methodEnd, index)
+            vars[it.varName] = Var(it.type(vars), index)
+            mainMethodWriter.visitLocalVariable(it.varName, it.type(vars).jvmDescription, null, methodStart, methodEnd, index)
         }
 
         root.statements.forEach { s ->
-            when(s) {
+            when (s) {
+                is VarDeclaration -> {
+                    val type = vars[s.varName]!!.type
+                    s.value.pushAs(mainMethodWriter, vars, type)
+                    when (type) {
+                        IntType -> mainMethodWriter.visitVarInsn(ISTORE, vars[s.varName]!!.index)
+                        DecimalType -> mainMethodWriter.visitVarInsn(DSTORE, vars[s.varName]!!.index)
+                        else -> throw UnsupportedOperationException(type.javaClass.canonicalName)
+                    }
+                }
                 is Print -> {
                     mainMethodWriter.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;")
-                    s.value.push(mainMethodWriter, varNamesToIndexes)
-                    mainMethodWriter.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(${s.value.type().jvmDescription})V", false)
+                    s.value.push(mainMethodWriter, vars)
+                    mainMethodWriter.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(${s.value.type(vars).jvmDescription})V", false)
+                }
+                is Assignment -> {
+                    val type = vars[s.varName]!!.type
+                    s.value.pushAs(mainMethodWriter, vars, type)
+                    when (type) {
+                        IntType -> mainMethodWriter.visitVarInsn(ISTORE, vars[s.varName]!!.index)
+                        DecimalType -> mainMethodWriter.visitVarInsn(DSTORE, vars[s.varName]!!.index)
+                        else -> throw UnsupportedOperationException(type.javaClass.canonicalName)
+                    }
                 }
                 else -> throw UnsupportedOperationException(s.javaClass.canonicalName)
             }
@@ -153,9 +184,18 @@ class JvmCompiler {
 }
 
 fun main(args: Array<String>) {
-    val code = "print(1 + 4 * 3 - 5)"
-    val bytes = JvmCompiler().compile(SandyParserFacade.parse(code).root!!, "FOO")
-    val fos = FileOutputStream("FOO.class")
+    val code : InputStream? = when (args.size) {
+        0 -> System.`in`
+        1 -> FileInputStream(File(args[0]))
+        else -> {
+            System.err.println("Pass 0 arguments or 1")
+            System.exit(1)
+            null
+        }
+    }
+    //val code = "print(1 + 4 * 3 - 5)"
+    val bytes = JvmCompiler().compile(SandyParserFacade.parse(code!!).root!!, "MyClass")
+    val fos = FileOutputStream("MyClass.class")
     fos.write(bytes)
     fos.close()
 }
