@@ -72,7 +72,7 @@ object SandyParserFacade {
         val antlrParsingResult = SandyAntlrParserFacade.parse(inputStream)
         val lexicalAnsSyntaticErrors = antlrParsingResult.errors
         val antlrRoot = antlrParsingResult.root
-        val astRoot = antlrRoot?.toAst(considerPosition = true)
+        val astRoot = if (lexicalAnsSyntaticErrors.isEmpty()) {antlrRoot?.toAst(considerPosition = true) } else { null }
         val semanticErrors = astRoot?.validate() ?: emptyList()
         return ParsingResult(astRoot, lexicalAnsSyntaticErrors + semanticErrors)
     }

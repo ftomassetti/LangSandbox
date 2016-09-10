@@ -193,8 +193,21 @@ fun main(args: Array<String>) {
             null
         }
     }
-    //val code = "print(1 + 4 * 3 - 5)"
-    val bytes = JvmCompiler().compile(SandyParserFacade.parse(code!!).root!!, "MyClass")
+    val parsingResult = SandyParserFacade.parse(code!!)
+    if (!parsingResult.isCorrect()) {
+        println("ERRORS:")
+        parsingResult.errors.forEach { println(" * L${it.position.line}: ${it.message}") }
+        return
+    }
+    val root = parsingResult.root!!
+    println(root)
+    val errors = root.validate()
+    if (errors.isNotEmpty()) {
+        println("ERRORS:")
+        errors.forEach { println(" * L${it.position.line}: ${it.message}") }
+        return
+    }
+    val bytes = JvmCompiler().compile(root, "MyClass")
     val fos = FileOutputStream("MyClass.class")
     fos.write(bytes)
     fos.close()
