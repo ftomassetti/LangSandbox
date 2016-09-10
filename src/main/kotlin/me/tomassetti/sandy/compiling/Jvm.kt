@@ -21,6 +21,14 @@ interface SandyType {
     val jvmDescription: String
 }
 
+fun Type.toSandyType() : SandyType {
+    return when(this) {
+        is me.tomassetti.sandy.ast.IntType -> IntType
+        is me.tomassetti.sandy.ast.DecimalType -> DecimalType
+        else -> throw UnsupportedOperationException()
+    }
+}
+
 object IntType : SandyType {
     override val jvmDescription: String
         get() = "I"
@@ -34,6 +42,7 @@ object DecimalType : SandyType {
 fun Expression.type(vars: Map<String, Var>) : SandyType {
     return when (this) {
         is IntLit -> IntType
+        is DecLit -> DecimalType
         is BinaryExpression -> {
             val leftType = left.type(vars)
             val rightType = right.type(vars)
@@ -50,6 +59,7 @@ fun Expression.type(vars: Map<String, Var>) : SandyType {
             }
         }
         is VarReference -> vars[this.varName]!!.type
+        is TypeConversion -> this.targetType.toSandyType()
         else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
     }
 }
@@ -72,6 +82,7 @@ fun Expression.pushAs(methodWriter: MethodVisitor, vars: Map<String, Var>, desir
 fun Expression.push(methodWriter: MethodVisitor, vars: Map<String, Var>) {
     when (this) {
         is IntLit -> methodWriter.visitLdcInsn(Integer.parseInt(this.value))
+        is DecLit -> methodWriter.visitLdcInsn(java.lang.Double.parseDouble(this.value))
         is SumExpression -> {
             left.pushAs(methodWriter, vars, this.type(vars))
             right.pushAs(methodWriter, vars, this.type(vars))
@@ -115,6 +126,9 @@ fun Expression.push(methodWriter: MethodVisitor, vars: Map<String, Var>) {
                 DecimalType -> methodWriter.visitVarInsn(DLOAD, vars[this.varName]!!.index)
                 else -> throw UnsupportedOperationException(type.javaClass.canonicalName)
             }
+        }
+        is TypeConversion -> {
+            this.value.pushAs(methodWriter, vars, this.targetType.toSandyType())
         }
         else -> throw UnsupportedOperationException(this.javaClass.canonicalName)
     }
@@ -200,7 +214,6 @@ fun main(args: Array<String>) {
         return
     }
     val root = parsingResult.root!!
-    println(root)
     val errors = root.validate()
     if (errors.isNotEmpty()) {
         println("ERRORS:")
