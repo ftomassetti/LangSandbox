@@ -11,7 +11,7 @@ You may be interested in the companion project ([Kanvas](https://github.com/ftom
 5. [Map the parse tree to the abstract syntax tree](http://tomassetti.me/parse-tree-abstract-syntax-tree/)
 6. [Transform the abstract syntax tree](http://tomassetti.me/model-to-model-transformations/)
 7. [Validate the abstract syntax tree](http://tomassetti.me/building-compiler-language-validation/)
-8. Generate bytecode (to be published)
+8. [Generate bytecode](http://tomassetti.me/generating-bytecode/)
 
 I hope you enjoy and please let me know if you have issues, ideas, comments or any sort of feedback!
 
