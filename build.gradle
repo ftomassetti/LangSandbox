@@ -32,9 +32,14 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
   compile 'org.ow2.asm:asm-all:5.1'
+  compile 'org.bytedeco.javacpp-presets:llvm:3.8.0-1.2'
   testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
   testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
   testCompile 'junit:junit:4.12'
+}
+
+configurations {
+    all*.exclude group: 'org.bytedeco', module: 'javacpp-presets'
 }
 
 generateGrammarSource {
@@ -61,8 +66,8 @@ idea {
     }
 }
 
-task compileSandyFile(type:JavaExec) {
-    main = "me.tomassetti.sandy.compiling.JvmKt"
-    args = "$sourceFile"
-    classpath = sourceSets.main.runtimeClasspath
-}
+//task compileSandyFile(type:JavaExec) {
+//    main = "me.tomassetti.sandy.compiling.JvmKt"
+//    args = "$sourceFile"
+//    classpath = sourceSets.main.runtimeClasspath
+//}
