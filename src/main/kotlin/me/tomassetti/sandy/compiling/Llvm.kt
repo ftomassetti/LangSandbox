@@ -2,6 +2,7 @@ package me.tomassetti.sandy.compiling
 
 import org.bytedeco.javacpp.BytePointer
 import org.bytedeco.javacpp.LLVM.*
+import org.bytedeco.javacpp.Pointer
 import org.bytedeco.javacpp.PointerPointer
 import java.io.File
 
@@ -15,14 +16,81 @@ fun setLibraryPath(path: String) {
     sysPathsField.set(null, null)
 }
 
+fun saveModuleAsIRCode(module: LLVMModuleRef, irFilename: String) {
+    var error = BytePointer()
+    LLVMPrintModuleToFile(module, irFilename, error)
+}
+
+fun saveModuleAsObjectCode(module: LLVMModuleRef, objectFilename: String) {
+    var error = BytePointer()
+    val targetTriple = LLVMGetDefaultTargetTriple()
+    println(targetTriple)
+
+
+
+    val target : LLVMTargetRef = LLVMTargetRef()
+    LLVMGetTargetFromTriple(targetTriple, target, error)
+
+    val CPU = "generic"
+    val Features = ""
+
+    //val opt = TargetOptions()
+    //val RM = LLVMOptional<Reloc::Model>();
+    //val TargetMachine = LLVMCreateTargetMachine()*/
+    // @Cast("LLVMCodeGenOptLevel") int Level, @Cast("LLVMRelocMode") int Reloc, @Cast("LLVMCodeModel") int CodeModel
+    val targetMachine = LLVMCreateTargetMachine(target, targetTriple.string, CPU, Features, LLVMCodeGenLevelDefault, LLVMRelocDefault, LLVMCodeModelDefault)
+
+    val pass = LLVMCreatePassManager()
+    //val fileType = LLVMCFG
+
+    val objectFilenamePtr = BytePointer(objectFilename)
+
+    LLVMTargetMachineEmitToFile(targetMachine, module, objectFilenamePtr, LLVMCodeGenLevelDefault, error)
+}
+
+fun moduleWithMain() {
+    val context = LLVMGetGlobalContext()
+    val module = LLVMModuleCreateWithName("me.tomassetti.MyModule")
+    var builder = LLVMCreateBuilderInContext(context)
+
+    val param_types = PointerPointer<LLVMTypeRef>()
+    val funcType = LLVMFunctionType(LLVMInt32Type(), param_types, 0, 0)
+
+    val mainFunc = LLVMAddFunction(module, "main", funcType)
+
+    val value = LLVMCreateGenericValueOfPointer(BytePointer("hello world!\n"))
+
+    val entry = LLVMAppendBasicBlock(mainFunc, "entrypoint")
+    builder = LLVMCreateBuilder()
+    LLVMPositionBuilderAtEnd(builder, entry)
+    val argsTypes = PointerPointer<Pointer>(LLVMPointerType(LLVMInt8Type(), 0))
+    val printf = LLVMAddFunction(module, "printf", LLVMFunctionType(LLVMInt32Type(), argsTypes, 1, 0));
+
+    //LLVMBuildCall()
+    //println("printf $printf")
+    //val functionAddress : LLVMValueRef = null
+    //LLVMBuildInvoke(builder, functionAddress, PointerPointer(LLVMPointerType(LLVMInt8Type())), 1, null, null, value)
+    LLVMBuildRet(builder,  LLVMConstInt(LLVMInt32Type(), 0, 0))
+
+    var error = BytePointer()
+    LLVMVerifyModule(module, LLVMAbortProcessAction, error)
+    saveModuleAsIRCode(module, "main.ll")
+    saveModuleAsObjectCode(module, "main.o")
+}
+
 fun main(args: Array<String>) {
-
-
     System.setProperty("java.library.path", File("./solibs").canonicalPath+ ":" + System.getProperty("java.library.path"))
     setLibraryPath(File("./solibs").canonicalPath+ ":" + System.getProperty("java.library.path"))
     System.loadLibrary("LLVM-3.9")
     System.loadLibrary("LTO")
 
+    LLVMInitializeAllTargetInfos()
+    LLVMInitializeAllTargets()
+    LLVMInitializeAllTargetMCs()
+    LLVMInitializeAllAsmParsers()
+    LLVMInitializeAllAsmPrinters()
+
+    moduleWithMain()
 
     //print(System.getProperty("java.library.path"))
     val module = LLVMModuleCreateWithName("me.tomassetti.LLVMExample")
@@ -56,38 +124,7 @@ fun main(args: Array<String>) {
     }
     println("SAVED")
 
-    val targetTriple = LLVMGetDefaultTargetTriple()
-    println(targetTriple)
-
-    LLVMInitializeAllTargetInfos()
-    LLVMInitializeAllTargets()
-    LLVMInitializeAllTargetMCs()
-    LLVMInitializeAllAsmParsers()
-    LLVMInitializeAllAsmPrinters()
-
-    val target : LLVMTargetRef = LLVMTargetRef()
-    LLVMGetTargetFromTriple(targetTriple, target, error)
-
-
-    val CPU = "generic"
-    val Features = ""
-
-    //val opt = TargetOptions()
-    //val RM = LLVMOptional<Reloc::Model>();
-    //val TargetMachine = LLVMCreateTargetMachine()*/
-    // @Cast("LLVMCodeGenOptLevel") int Level, @Cast("LLVMRelocMode") int Reloc, @Cast("LLVMCodeModel") int CodeModel
-    val targetMachine = LLVMCreateTargetMachine(target, targetTriple.string, CPU, Features, LLVMCodeGenLevelDefault, LLVMRelocDefault, LLVMCodeModelDefault)
-
-    val objectFilename = "output.o"
-    val pass = LLVMCreatePassManager()
-    //val fileType = LLVMCFG
-
-    val objectFilenamePtr = BytePointer(objectFilename)
-
-    LLVMTargetMachineEmitToFile(targetMachine, module, objectFilenamePtr, LLVMCodeGenLevelDefault, error)
-
-    LLVMLinkModules2()
-
+    saveModuleAsObjectCode(module, "sum.o")
 
     /*auto Filename = "output.o";
     std::error_code EC;
