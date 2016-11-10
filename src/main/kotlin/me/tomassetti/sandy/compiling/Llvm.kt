@@ -4,7 +4,6 @@ import org.bytedeco.javacpp.BytePointer
 import org.bytedeco.javacpp.LLVM.*
 import org.bytedeco.javacpp.Pointer
 import org.bytedeco.javacpp.PointerPointer
-import java.io.File
 
 @Throws(Exception::class)
 fun setLibraryPath(path: String) {
@@ -53,6 +52,7 @@ fun moduleWithMain() {
     val module = LLVMModuleCreateWithName("me.tomassetti.MyModule")
     var builder = LLVMCreateBuilderInContext(context)
 
+
     val param_types = PointerPointer<LLVMTypeRef>()
     val funcType = LLVMFunctionType(LLVMInt32Type(), param_types, 0, 0)
 
@@ -64,13 +64,15 @@ fun moduleWithMain() {
     builder = LLVMCreateBuilder()
     LLVMPositionBuilderAtEnd(builder, entry)
     val argsTypes = PointerPointer<Pointer>(LLVMPointerType(LLVMInt8Type(), 0))
-    val printf = LLVMAddFunction(module, "printf", LLVMFunctionType(LLVMInt32Type(), argsTypes, 1, 0));
+    val printf = LLVMAddFunction(module, "printf", LLVMFunctionType(LLVMInt32Type(), argsTypes, 1, 0))
+
 
     //LLVMBuildCall()
     //println("printf $printf")
     //val functionAddress : LLVMValueRef = null
     //LLVMBuildInvoke(builder, functionAddress, PointerPointer(LLVMPointerType(LLVMInt8Type())), 1, null, null, value)
     LLVMBuildRet(builder,  LLVMConstInt(LLVMInt32Type(), 0, 0))
+
 
     var error = BytePointer()
     LLVMVerifyModule(module, LLVMAbortProcessAction, error)
@@ -79,10 +81,10 @@ fun moduleWithMain() {
 }
 
 fun main(args: Array<String>) {
-    System.setProperty("java.library.path", File("./solibs").canonicalPath+ ":" + System.getProperty("java.library.path"))
+    /*System.setProperty("java.library.path", File("./solibs").canonicalPath+ ":" + System.getProperty("java.library.path"))
     setLibraryPath(File("./solibs").canonicalPath+ ":" + System.getProperty("java.library.path"))
     System.loadLibrary("LLVM-3.9")
-    System.loadLibrary("LTO")
+    System.loadLibrary("LTO")*/
 
     LLVMInitializeAllTargetInfos()
     LLVMInitializeAllTargets()
@@ -92,6 +94,9 @@ fun main(args: Array<String>) {
 
     moduleWithMain()
 
+    if (true) {
+        return
+    }
     //print(System.getProperty("java.library.path"))
     val module = LLVMModuleCreateWithName("me.tomassetti.LLVMExample")
     // an array is a PointerPointer in the JavaCPP-Presets. Don't ask...
