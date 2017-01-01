@@ -17,7 +17,7 @@ class SandyLexerTest {
            val t = lexer.nextToken()
             when (t.type) {
                 -1 -> tokens.add("EOF")
-                else -> if (t.type != SandyLexer.WS) tokens.add(lexer.ruleNames[t.type - 1])
+                else -> if (t.type != SandyLexer.WS) tokens.add(SandyLexer.VOCABULARY.getSymbolicName(t.type))
             }
         } while (t.type != -1)
         return tokens
