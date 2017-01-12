@@ -12,7 +12,7 @@ fun SandyFileContext.toAst(considerPosition: Boolean = false) : SandyFile = Sand
 
 fun Token.startPoint() = Point(line, charPositionInLine)
 
-fun Token.endPoint() = Point(line, charPositionInLine + text.length)
+fun Token.endPoint() = Point(line, charPositionInLine + (if (type == EOF) 0 else text.length))
 
 fun ParserRuleContext.toPosition(considerPosition: Boolean) : Position? {
     return if (considerPosition) Position(start.startPoint(), stop.endPoint()) else null
