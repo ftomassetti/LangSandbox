@@ -2,6 +2,9 @@
 
 This project is used to illustrate how to build a programming language. The code present here is discussed in a series of articles.
 
+From these series of tutorials I derived a [book on creating languages](https://leanpub.com/create_languages).
+
+
 You may be interested in the companion project ([Kanvas](https://github.com/ftomassetti/kanvas)) where we show how to build an editor for your language.
 
 1. [Define the lexer](http://tomassetti.me/getting-started-with-antlr-building-a-simple-expression-language/)
