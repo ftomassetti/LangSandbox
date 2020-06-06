@@ -1,0 +1,5 @@
+task compileSandyFile(type:JavaExec) {
+    main = "me.tomassetti.sandy.compiling.JvmKt"
+    args = "$sourceFile"
+    classpath = sourceSets.main.runtimeClasspath
+}
