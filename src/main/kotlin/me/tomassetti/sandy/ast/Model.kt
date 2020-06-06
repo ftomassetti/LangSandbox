@@ -2,8 +2,8 @@ package me.tomassetti.sandy.ast
 
 import java.util.*
 import kotlin.reflect.KParameter
-import kotlin.reflect.memberProperties
-import kotlin.reflect.primaryConstructor
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.primaryConstructor
 
 //
 // Generic part: valid for all languages
