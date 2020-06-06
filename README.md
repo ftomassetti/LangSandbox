@@ -1,3 +1,6 @@
+[![Apache 2.0 License][license badge]][Apache 2.0 License]&nbsp;
+![build status][travis badge]
+
 # LangSandbox
 
 This project is used to illustrate how to build a programming language.
@@ -24,6 +27,13 @@ I hope you enjoy and please let me know if you have issues, ideas, comments or a
 
 [Kanvas]: https://github.com/ftomassetti/kanvas "Visit the Kanvas repository on GitHub"
 [book on creating languages]: https://tomassetti.me/create-languages "'How to Create Pragmatic, Lightweight Languages' by Federico Tomassetti"
+
+[Apache 2.0 License]: ./LICENSE
+
+<!-- badges -->
+
+[license badge]: https://img.shields.io/badge/license-Apache%202.0-00b5da.svg
+[travis badge]: https://travis-ci.org/ftomassetti/LangSandbox.svg?branch=master "Travis CI Build status for EditorConfig code-styles consistency validation"
 
 <!-- tutorials -->
 
