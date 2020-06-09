@@ -52,6 +52,7 @@ compileJava.source sourceSets.generated.java, sourceSets.main.java
 compileKotlin.source sourceSets.generated.java, sourceSets.main.java, sourceSets.main.kotlin
 
 build.dependsOn generateGrammarSource
+compileKotlin.dependsOn generateGrammarSource
 
 clean{
     delete "generated-src"
