@@ -1,15 +1,14 @@
 package me.tomassetti.sandy
 
 import me.tomassetti.langsandbox.SandyLexer
-import org.antlr.v4.runtime.ANTLRInputStream
-import java.io.StringReader
+import org.antlr.v4.runtime.CharStreams
 import java.util.*
 import kotlin.test.assertEquals
 import org.junit.Test as test
 
 class SandyLexerTest {
 
-    fun lexerForCode(code: String) = SandyLexer(ANTLRInputStream(StringReader(code)))
+    fun lexerForCode(code: String) = SandyLexer(CharStreams.fromString(code))
 
     fun tokens(lexer: SandyLexer): List<String> {
         val tokens = LinkedList<String>()
@@ -23,32 +22,32 @@ class SandyLexerTest {
         return tokens
     }
 
-    @org.junit.Test fun parseVarDeclarationAssignedAnIntegerLiteral() {
+    @test fun parseVarDeclarationAssignedAnIntegerLiteral() {
         assertEquals(listOf("VAR", "ID", "ASSIGN", "INTLIT", "EOF"),
                 tokens(lexerForCode("var a = 1")))
     }
 
-    @org.junit.Test fun parseVarDeclarationAssignedADecimalLiteral() {
+    @test fun parseVarDeclarationAssignedADecimalLiteral() {
         assertEquals(listOf("VAR", "ID", "ASSIGN", "DECLIT", "EOF"),
                 tokens(lexerForCode("var a = 1.23")))
     }
 
-    @org.junit.Test fun parseVarDeclarationAssignedASum() {
+    @test fun parseVarDeclarationAssignedASum() {
         assertEquals(listOf("VAR", "ID", "ASSIGN", "INTLIT", "PLUS", "INTLIT", "EOF"),
                 tokens(lexerForCode("var a = 1 + 2")))
     }
 
-    @org.junit.Test fun parseMathematicalExpression() {
+    @test fun parseMathematicalExpression() {
         assertEquals(listOf("INTLIT", "PLUS", "ID", "ASTERISK", "INTLIT", "DIVISION", "INTLIT", "MINUS", "INTLIT", "EOF"),
                 tokens(lexerForCode("1 + a * 3 / 4 - 5")))
     }
 
-    @org.junit.Test fun parseMathematicalExpressionWithParenthesis() {
+    @test fun parseMathematicalExpressionWithParenthesis() {
         assertEquals(listOf("INTLIT", "PLUS", "LPAREN", "ID", "ASTERISK", "INTLIT", "RPAREN", "MINUS", "DECLIT", "EOF"),
                 tokens(lexerForCode("1 + (a * 3) - 5.12")))
     }
 
-    @org.junit.Test fun parseCast() {
+    @test fun parseCast() {
         assertEquals(listOf("ID", "ASSIGN", "ID", "AS", "INT", "EOF"),
                 tokens(lexerForCode("a = b as Int")))
     }
