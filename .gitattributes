@@ -1,0 +1,55 @@
+# Set the default behavior, in case Win users didn't set core.autocrlf.
+* text=auto
+
+
+# Explicilty declare EOL normalization and binary files for all file types
+# used in the project. ("Explicit is better than implicit." PEP 20 Zen)
+
+
+## Our New Languages
+####################
+*.sandy   text
+
+
+## Repository Configurations
+############################
+.editorconfig    text eol=lf
+.gitlab-ci.yml   text eol=lf
+.travis.yml      text eol=lf
+.gitattributes   text eol=lf
+.gitconfig       text eol=lf
+.gitignore       text eol=lf
+.gitmodules      text eol=lf
+
+
+## Shell Scripts
+################
+gradlew   text eol=lf
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+*.sh      text eol=lf
+*.ps1     text eol=crlf
+
+
+## Documentation
+################
+*.md      text
+LICENSE   text
+
+
+## ANTLR v4
+###########
+*.g4       text
+*.tokens   text
+
+
+## Kotlin
+#########
+*.kt   text
+
+
+## Gradle
+#########
+*.gradle       text
+*.jar          binary
+*.properties   text
