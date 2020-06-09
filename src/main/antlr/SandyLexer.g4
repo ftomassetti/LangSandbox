@@ -1,8 +1,10 @@
 lexer grammar SandyLexer;
 
+channels { EXTRA }
+
 // Whitespace
 NEWLINE            : '\r\n' | 'r' | '\n' ;
-WS                 : [\t ]+ -> skip ;
+WS                 : [\t ]+ -> channel(EXTRA) ;
 
 // Keywords
 VAR                : 'var' ;
@@ -26,3 +28,5 @@ RPAREN             : ')' ;
 
 // Identifiers
 ID                 : [_]*[a-z][A-Za-z0-9_]* ;
+
+UNMATCHED          : .  -> channel(EXTRA);

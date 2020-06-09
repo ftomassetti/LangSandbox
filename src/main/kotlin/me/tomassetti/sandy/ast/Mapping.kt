@@ -1,5 +1,8 @@
 package me.tomassetti.sandy.ast
 
+import me.tomassetti.kolasu.model.Node
+import me.tomassetti.kolasu.model.Point
+import me.tomassetti.kolasu.model.Position
 import me.tomassetti.langsandbox.SandyParser.*
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Token

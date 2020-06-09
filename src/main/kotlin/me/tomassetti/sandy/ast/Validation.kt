@@ -1,5 +1,7 @@
 package me.tomassetti.sandy.ast
 
+import me.tomassetti.kolasu.model.Point
+import me.tomassetti.kolasu.model.isBefore
 import java.util.*
 
 data class Error(val message: String, val position: Point)

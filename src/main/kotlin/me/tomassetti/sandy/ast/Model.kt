@@ -1,29 +1,14 @@
 package me.tomassetti.sandy.ast
 
+import me.tomassetti.kolasu.model.Node
+import me.tomassetti.kolasu.model.Point
+import me.tomassetti.kolasu.model.Position
 import java.util.*
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 
-//
-// Generic part: valid for all languages
-//
-
-interface Node {
-    val position: Position?
-}
-
-fun Node.isBefore(other: Node) : Boolean = position!!.start.isBefore(other.position!!.start)
-
-fun Point.isBefore(other: Point) : Boolean = line < other.line || (line == other.line && column < other.column)
-
-data class Point(val line: Int, val column: Int) {
-    override fun toString() = "Line $line, Column $column"
-}
-
-data class Position(val start: Point, val end: Point)
-
-fun pos(startLine:Int, startCol:Int, endLine:Int, endCol:Int) = Position(Point(startLine,startCol),Point(endLine,endCol))
+fun pos(startLine:Int, startCol:Int, endLine:Int, endCol:Int) = Position(Point(startLine,startCol), Point(endLine,endCol))
 
 fun Node.process(operation: (Node) -> Unit) {
     operation(this)

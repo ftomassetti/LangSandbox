@@ -1,5 +1,6 @@
 package me.tomassetti.sandy.parsing
 
+import me.tomassetti.kolasu.model.Point
 import me.tomassetti.langsandbox.SandyLexer
 import me.tomassetti.langsandbox.SandyParser
 import me.tomassetti.langsandbox.SandyParser.SandyFileContext

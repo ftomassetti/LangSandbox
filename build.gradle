@@ -19,6 +19,7 @@ apply plugin: 'kotlin'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'antlr'
+apply plugin: 'application'
 
 repositories {
   mavenLocal()
@@ -32,6 +33,8 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
   compile 'org.ow2.asm:asm-all:5.2'
+  compile 'com.fifesoft:rsyntaxtextarea:3.1.1'
+  compile 'me.tomassetti.kanvas:kanvas-core:0.2.1'
   testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
   testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
   testCompile 'junit:junit:4.13'
@@ -103,3 +106,5 @@ tasks.withType(Test) {
         }
     }
 }
+
+mainClassName = "KanvasKt"

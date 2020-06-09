@@ -1,5 +1,6 @@
 package me.tomassetti.sandy.ast
 
+import me.tomassetti.kolasu.model.Point
 import me.tomassetti.sandy.parsing.SandyParserFacade
 import kotlin.test.assertEquals
 import org.junit.Test as test
