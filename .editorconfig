@@ -1,0 +1,77 @@
+root = true
+
+## Our New Languages
+####################
+[*.sandy]
+charset = utf-8
+end_of_line = unset
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = false
+
+
+## Repository Configuration
+###########################
+[.{git*,editorconfig,*.yml}]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+## Shell Scripts
+################
+[*.sh]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+## Batch Scripts
+################
+[*.{bat,cmd}]
+charset = utf-8
+end_of_line = crlf
+indent_style = tab
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+## Markdown GFM
+###############
+[*.md]
+charset = utf-8
+end_of_line = unset
+indent_style = space
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+## ANTLR v4
+###########
+[*.{g4,tokens}]
+charset = utf-8
+end_of_line = unset
+indent_style = space
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+## Kotlin
+#########
+[*.kt]
+charset = utf-8
+end_of_line = unset
+indent_style = space
+indent_size = unset
+trim_trailing_whitespace = true
+insert_final_newline = true
