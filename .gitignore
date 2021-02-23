@@ -16,3 +16,9 @@ hs_err_pid*
 *.iws
 generated-src
 out
+bin/
+build/
+.classpath
+.project
+.settings/org.eclipse.buildship.core.prefs
+.vscode/settings.json
