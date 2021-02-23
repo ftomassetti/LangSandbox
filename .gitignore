@@ -8,16 +8,25 @@
 *.war
 *.ear
 
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 .gradle
+
+# IntelliJ specific
 *.iml
 *.ipr
 *.iws
+.idea
+
+# Build output
 generated-src
 out
-bin/
-build/
+build
+generated-src
+bin
 .classpath
 .project
 .settings/org.eclipse.buildship.core.prefs
