@@ -63,3 +63,11 @@ idea {
         sourceDirs += file("generated-src/antlr/main")
     }
 }
+
+
+// show results when running gradle test
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
